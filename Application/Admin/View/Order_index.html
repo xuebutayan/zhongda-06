@@ -1,0 +1,231 @@
+<include file="Public:header"/>
+<link rel="stylesheet" href="__PUBLIC__/Plugin/style/css/bootstrap-datepicker.css">
+<style>
+	.btn-info {
+		font-size: 12px;
+		padding: 5px 10px;
+		border: none;
+	}
+	#form-search label {
+		padding-left: 15px;
+	}
+	h3 {
+		font-size: 16px;
+		font-weight: 600;
+		font-family: "Microsoft Yahei", Arial;
+	}
+</style>
+<div class="col-sm-12 widget-container-span">
+	<div class="widget-box transparent">
+		<div class="widget-header">
+			<div class="widget-toolbar no-border">
+				<ul class="nav nav-tabs" id="myTab">
+					<if condition="$type eq order_list">
+						<li class="active"><a href="{:U('Admin/Order/index')}">订单管理</a></li>
+						<else/>
+						<li class=""><a href="{:U('Admin/Order/index')}">订单管理</a></li>
+						<li class="active"><a href="{:U('Admin/Order/getOrderInfo', array('id'=>$id))}">订单详情</a></li>
+					</if>
+				</ul>
+			</div>
+		</div>
+		<div class="widget-body">
+			<div class="widget-main padding-12 no-padding-left no-padding-right">
+				<div class="tab-content padding-4">
+					<if condition="$type eq order_list">
+							<div id="home1" class="tab-pane in active">
+							<div class="row">
+								<div class="col-xs-12" >
+									<form action="{:U('Admin/Order/index')}" method="post" id="form-search">
+										<div class="">
+											<label for="">订单号：</label>
+											<input type="text" placeholder="请输入订单号" value="" name="orderid" class="input">
+											<label for="">商品名称：</label>
+											<select name="gid" id="">
+												<option value="0">全部</option>
+												<volist name="goods_list" id="vo">
+													<option value="{$vo.id}">{$vo.name}</option>
+												</volist>
+											</select>
+											<label for="">兑换地点：</label>
+											<select name="redeem" >
+												<option value="0">请选择兑换地点</option>
+												<volist name="redeems" id="vo">
+													<option value="{$vo.id}">{$vo.name}</option>
+												</volist>
+											</select>
+											<label for="">订单状态：</label>
+											<select name="order_status" >
+												<option value="0">请选择订单状态</option>
+												<option value="1">已报名</option>
+												<option value="2">可兑换</option>
+												<option value="3">已兑换</option>
+											</select>
+										</div>
+										<div class="" style="margin: 10px 0px;">
+											<label for="">开始时间：</label>
+											<input type="text" class="input" id="beginDate" name="begindate">
+											<label for="">结束时间：</label>
+											<input type="text" class="input" id="endDate" name="enddate">
+											<input type="submit" value="提交" class="btn btn-info" style="margin-left: 36px;">
+										</div>
+									</form>
+								</div>
+								<div class="col-xs-12 no-padding-right">
+									<div class="table-responsive">
+										<table id="sample-table-1"
+											   class="table table-striped table-bordered table-hover">
+											<thead>
+											<tr>
+												<th>编号</th>
+												<th>订单号</th>
+												<th>商品信息</th>
+												<th>报名用户</th>
+												<th>打赏金额</th>
+												<th>打赏总额</th>
+												<th>订单状态</th>
+												<th>兑换地点</th>
+												<th>添加时间</th>
+												<th>操作</th>
+											</tr>
+											</thead>
+
+											<tbody>
+											<volist name="result" id="result">
+												<tr>
+													<td>{$result.id}</td>
+													<td>{$result.orderid}</td>
+													<td>{$result.good_name}</td>
+													<td>{$result.wx_nickname}</td>
+													<td>{$result.has_r_money}</td>
+													<td>{$result.total_r_money}</td>
+													<td>
+														<if condition="$result['order_status'] eq 1">
+															<span class="label label-info">{$result.status}</span>
+														</if>
+														<if condition="$result['order_status'] eq 2">
+															<span class="label label-success">{$result.status}</span>
+														</if>
+														<if condition="$result['order_status'] eq 3">
+															<span class="label label-danger">{$result.status}</span>
+														</if>
+													</td>
+													<td>
+														<if condition="$result['order_status'] eq 1">
+															<span class="label label-info">{$result.red_name}</span>
+														</if>
+														<if condition="$result['order_status'] eq 2">
+															<span class="label label-success">{$result.red_name}</span>
+														</if>
+														<if condition="$result['order_status'] eq 3">
+															<span class="label label-danger">{$result.red_name}</span>
+														</if>
+													</td>
+													<td>{$result.time}</td>
+													<td>
+														<a href="{:U('Admin/Order/getOrderInfo', array('id'=>$result['id']))}"  class="btn btn-info btn-sm">查看详情</a>
+														<!--<a class="btn btn-white btn-sm" href="{:U('Admin/Order/del',array('id'=>$result['id']))}">删除</a></td>-->
+												</tr>
+											</volist>
+											</tbody>
+										</table>
+										<div class="pagination" style="margin:0px;">
+											{$page}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<else/>
+							<div id="home2" class="tab-pane in active">
+							<form class="form-horizontal J_ajaxForm" id="myform" action="" method="post">
+								<div class="tabbable">
+									<div class="tab-content">
+										<div class="tab-pane active" style="width: 50%;">
+											<h3>订单信息</h3>
+											<table class="table table-bordered">
+												<tbody>
+												<tr>
+													<td>订单号：</td>
+													<td>
+														<span class="oid">{$order_info.orderid}</span>
+													</td>
+													<td>订单状态</td>
+													<td>
+														<span class="status">{$order_info.status}</span>
+													</td>
+												</tr>
+												<tr>
+													<td>兑换地点</td>
+													<td colspan="3">
+														<span class="address">{$order_info.rname}</span>
+													</td>
+												</tr>
+												</tbody>
+											</table>
+											<h3>商品信息 和 用户信息</h3>
+											<table class="table table-bordered">
+												<tbody>
+												<tr>
+													<td>商品名称：</td>
+													<td>
+														<span class="">{$order_info.name}</span>
+													</td>
+													<td>商品价格</td>
+													<td>
+														<span class="">{$order_info.price}</span>
+													</td>
+												</tr>
+												<tr>
+													<td>报名用户</td>
+													<td colspan="3">{$order_info.wx_nickname}</td>
+												</tr>
+												<tr>
+													<td>联系姓名：</td>
+													<td>
+														<span class="">{$order_info.username}</span>
+													</td>
+													<td>联系方式</td>
+													<td>
+														<span class="">{$order_info.mobile}</span>
+													</td>
+												</tr>
+												</tbody>
+											</table>
+											<h3>打赏人员信息</h3>
+											<table class="table table-bordered">
+												<tbody>
+												<tr>
+													<th>打赏用户名称</th>
+													<th>打赏金额</th>
+													<th>打赏时间</th>
+												</tr>
+												<volist name="order_info['reward_info']" id="reward">
+													<tr>
+														<td>{$reward.wx_nickname}</td>
+														<td>{$reward.r_money}</td>
+														<td>{$reward.time}</td>
+													</tr>
+												</volist>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</if>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="__PUBLIC__/Plugin/style/js/bootstrap-datepicker.js"></script>
+	<script src="__PUBLIC__/Plugin/style/js/bootstrap-datepicker.zh-CN.js"></script>
+	<script type="text/javascript">
+		$('#beginDate, #endDate').datepicker({
+			format: 'yyyy-mm-dd',
+			autoclose: true,
+			language: 'zh-CN'
+		});
+	</script>
+</div>

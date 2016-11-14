@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>点动打赏-兑换验证</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="__PUBLIC__/Plugin/style/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="__PUBLIC__/Plugin/style/css/feedback-page.css">
+    <!-- Bootstrap theme -->
+    <style>
+        body {
+            background-color: #efeff4;
+            font-family: "Microsoft Yahei", Arial;
+        }
+        .p-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .a-btn {
+            position: absolute;
+            bottom: 40px;
+            right: 112px;
+            border: 1px solid #F00;
+            border-radius: 50px;
+            padding: 10px 20px;
+            color: #F00;
+        }
+        .a-success {
+            border-color: #468847;
+            color: #468847;
+        }
+    </style>
+    </head>
+
+<body role="document">
+
+<!-- Fixed navbar -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">点动打赏</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="{:U('Admin/Order/Order_check')}">兑换验证</a></li>
+                <li class=""><a href="{:U('Admin/Order/getRewardLog', array('rid'=>$redeem_info['id']))}">已兑换列表</a></li>
+            </ul>
+            <ul class="nav navbar-nav pull-right">
+                <li><a href="{:U('Admin/Login/logout')}" >退出</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+
+<div class="container" role="main" style="margin-top: 64px;">
+    <div class="alert alert-success" role="alert" id="">
+        <h3>兑换地点：{$redeem_info.name}</h3>
+        <strong></strong> <span>{$redeem_info.province}省&nbsp;{$redeem_info.city}市&nbsp;{$redeem_info.district}&nbsp;&nbsp;{$redeem_info.address}</span>
+    </div>
+    <form class="form-inline" style="margin: 25px 0px;" id="tradeFrom" method="post" action="{:U('Admin/Order/getOrderDetial')}">
+        <label class="" for="">请输入订单号：</label>
+        <div class="form-group">
+            <input type="text" class="form-control"  name="trade_no" value="{$trade_no}">
+            <input type="hidden" name="gid" value="{$order.gid}">
+            <input type="hidden" name="rid" value="{$redeem_info.id}">
+        </div>
+        <button type="button" class="btn btn-default" id="trade_no_post">提交</button>
+    </form>
+    <div class="err_msg" style="display:block;">
+        <div class="alert alert-success" role="alert" id="success_msg">
+            <strong>温馨提示：</strong> <span>点动生活订单号为八位有效数字构成，示例：70540129</span>
+        </div>
+        <div class="alert alert-danger" role="alert" id="err_msg" style="display:none;">
+            <strong>温馨提示：</strong><span>没有找到您要查找的验证订单</span>
+        </div>
+    </div>
+    <if condition="$order neq null">
+        <div class="order_info" style="display: block;">
+            <div class="media-body" style="position: relative; background-color: #FFF; padding: 25px; ">
+                <img class=" media-object  pull-left" src="__PUBLIC__{$order.savepath}{$order.image}" style="width:320px; height: 320px; margin-right: 25px;">
+                <p class="p-title">商品信息：</p>
+                <p class="">{$order.name}</p>
+                <p class="">商品价格：<span class="f-c-r">{$order.now_price}元</span></p>
+                <if condition="$order.order_status eq 1">
+                    <p class="p-title">订单信息：</p>
+                    <p>已经有{$order_info.has_people}位亲友，打赏了，目前还剩{$order_info.surplus_price}元</p>
+                    <span href="javascript:;" class="a-btn a-danger">打赏金额未满，不能兑换</span>
+                </if>
+                <if condition="$order.order_status eq 2">
+                    <p class="p-title">用户信息：</p>
+                    <p class="">用户姓名：{$order.username}</p>
+                    <p class="">用户联系方式：{$order.mobile}</p>
+                    <p>选择兑换地点：{$order.rname}</p>
+                    <span href="javascript:;" class="a-btn a-success">打赏金额已满，可兑换</span>
+                </if>
+                <if condition="$order.order_status eq 3">
+                    <p class="">用户名称：{$order.username}</p>
+                    <p class="">用户手机号：{$order.mobile}</p>
+                    <p>兑换地点：{$redeem_name}</p>
+                    <span href="javascript:;" class="a-btn a-success">商品已经兑换过了</span>
+                </if>
+            </div>
+
+            <div class=" media-body">
+                <form class="form-inline" style="margin: 25px 0px; float:right;">
+                    <if condition="$order.order_status eq 2 ">
+                        <button type="submit" class="btn btn-default" data-toggle="modal" data-target="#model">兑换</button>
+                    </if>
+                    <a href="{:U('Admin/Order/order_check')}" class="btn btn-default">返回</a>
+                </form>
+            </div>
+            <if condition="$order.order_status eq 2 ">
+                <div class="alert alert-danger" role="alert">
+                    <strong>温馨提示：</strong> 请确认其填写用户名及联系方式！
+                </div>
+            </if>
+        </div>
+    </if>
+    <div class="modal fade" id="model">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">兑换提醒</h4>
+                </div>
+                <div class="modal-body">
+                    <p>请确保用户信息的比对正确，完成兑换，请点击确认</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="modal_verify">确认</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div> <!-- /container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="__PUBLIC__/Plugin/style/js/jquery-2.0.3.min.js"></script>
+<script src="__PUBLIC__/Plugin/style/js/bootstrap.min.js"></script>
+<script>
+    $(function() {
+        $('#trade_no_post').on('click', function() {
+            var reg = /^\d{8}$/;
+            var trade_no = $('input[name="trade_no"]').val();
+            if (!reg.test(trade_no)) {
+                $('#success_msg').hide();
+                $('#err_msg').show().children('span').html('请输入八位有效数字！');
+            } else {
+                $.ajax({
+                    url:'{:U("Admin/Order/checkTradeNo")}',
+                    method:'POST',
+                    data:{trade_no:trade_no},
+                    dataType: 'JSON',
+                    success: OrderResult
+                });
+            }
+        });
+        $('#modal_verify').on('click', function() {
+            var trade_no = $('input[name="trade_no"]').val();
+            var gid = $('input[name="gid"]').val();
+            var rid = $('input[name="rid"]').val();
+            $.ajax({
+                url:'{:U("Admin/Order/setOrderStatus")}',
+                method:'POST',
+                data:{trade_no:trade_no, rid:rid, gid:gid},
+                dataType: 'JSON',
+                success: function(res) {
+                   if (res.is_err == 0) {
+                       location.href="{:U('Admin/Order/getOrderDetial?trade_no=')}"+trade_no;
+                   }
+                }
+            });
+        });
+    });
+    function OrderResult(res) {
+        if (res.is_err != 0) {
+            $('#success_msg').hide();
+            $('#err_msg').show().children('span').html(res.err_msg);
+        } else {
+            $('#tradeFrom').submit();
+        }
+    }
+</script>
+</body>
+</html>

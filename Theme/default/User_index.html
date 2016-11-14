@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 网页信息 -->
+    <meta name="description" content="点动生活,一切为了生活,山东众达网络有限公司">
+    <meta name="author" content="众达网络-CP">
+    <!-- 网页图标 -->
+    <!--<link rel="shortcut icon" type="image/x-icon" href="__IMG__/favicon.ico">-->
+    <title>我要-个人中心</title>
+    <!-- Css -->
+    <link rel="stylesheet" href="__CSS__/root.css">
+    <!-- Js -->
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?d98ba0ceddb6602faa3d3fb84470d676";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    <style>
+        .footer ul li:not(:last-child):after {
+            display: block;
+            content: '';
+            position: absolute;
+            top: 12px;
+            width: 1px;
+            height: 24px;
+            right: 0px;
+            background-color: #E0E1E1;
+        }
+    </style>
+
+
+</head>
+<body class="user-info">
+<div class="content">
+    <!-- 用户信息 -->
+    <div class="user_info">
+        <input type="hidden" value="http://public.diandongshenghuo.com/__IMG__/share-img.jpg" id="share-img">
+        <div class="user-header">
+            <img src="{$user.wx_headimgurl}" alt="">
+            <p>{$user.wx_nickname}</p>
+        </div>
+        <div class="notice-box" style="position:relative;">
+            <p>
+                点击查看详情，获取订单详情
+            </p>
+            <a href="{:U('App/User/duiba', array('uid'=>$uid))}" style="display:block; width: 36%; position:absolute; top: 5px; right: 0px; height: 40px;">
+                <img src="__IMG__/ds-icon-yao.gif" alt="" style="display: block;  width: 100%; ">
+            </a>
+        </div>
+    </div>
+    <div class="container">
+        <!-- 商品列表 -->
+        <div class="goods-group">
+            <if condition="$order_list neq null">
+                <ul>
+                    <volist name="order_list" id="order">
+                        <li>
+                            <if condition="$order.order_status eq 1">
+                            <a href="{:U('App/Reward/index', array('openid'=>$openid, 'uid'=>$order['uid'], 'gid'=>$order['gid'], 'oid'=>$order['id']))}">
+                            </if>
+                            <if condition="$order.order_status eq 2">
+                                <a href="{:U('App/Apply/index', array('openid'=>$openid, 'uid'=>$order['uid'], 'gid'=>$order['gid'], 'oid'=>$order['id']))}">
+                            </if>
+                            <if condition="$order.order_status eq 3">
+                                <a href="{:U('App/Apply/index', array('openid'=>$openid, 'uid'=>$order['uid'], 'gid'=>$order['gid'], 'oid'=>$order['id']))}">
+                            </if>
+                                <div class="good-box clearfix">
+                                    <img src="__PUBLIC__{$order.savepath}{$order.image}" alt="{$order.good_name}" class="img">
+                                    <div class="good-info" style="padding-top: 24px;">
+                                        <p class="good-name">{$order.good_name}</p>
+                                        <if condition="$order.order_status eq 1">
+                                            <img src="__IMG__/ds-icon-jinxing.png" alt="">
+                                            <p class="good-reward price-style">报名成功！</p>
+                                        </if>
+                                        <if condition="$order.order_status eq 2">
+                                            <img src="__IMG__/ds-icon-duihuan.png" alt="">
+                                            <p class="good-reward price-style">可兑换商品！</p>
+                                        </if>
+                                        <if condition="$order.order_status eq 3">
+                                            <img src="__IMG__/ds-icon-jieshu.png" alt="">
+                                            <p class="good-reward price-style">商品已兑换</p>
+                                        </if>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                    </volist>
+                    <!-- 分页显示 -->
+                    <div class="page">
+                        <if condition="$nowpage egt 2">
+                            <a href="{:U('App/User/index', array('openid'=>$openid, 'nowpage'=>$nowpage-1))}">上一页</a>
+                        </if>
+                        <span>第{$nowpage}页/共{$pageall}页</span>
+                        <if condition="$nowpage lt $pageall">
+                            <a href="{:U('App/User/index', array('openid'=>$openid, 'nowpage'=>$nowpage+1))}">下一页</a>
+                        </if>
+                    </div>
+                </ul>
+                <else/>
+                <a href="{:U('App/Index/index', array('openid'=>$openid))}"><img src="__IMG__/ds-bg-user-none.png" alt="" style="display:block; width: 50%; margin: 0 auto; padding-top: 50px;"></a>
+            </if>
+        </div>
+    </div>
+    <div class="footer">
+        <ul>
+            <li style="width: 35%; position: relative;"><a href="{:U('App/Index/index', array('openid'=>$openid))}">商品列表</a></li>
+            <li style="width: 30%; position: relative;"><a href="{:U('App/Share/index', array('openid'=>$openid))}">兑换照</a></li>
+            <li style="width: 35%;"><a href="{:U('App/User/index', array('openid'=>$openid))}">个人中心</a></li>
+        </ul>
+    </div>
+</div>
+<script src="__JS__/jquery.min.js"></script>
+<script src="__JS__/root.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+<script>
+    wx.config({
+        debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        appId: '{$jssdk.appId}', // 必填，公众号的唯一标识
+        timestamp: '{$jssdk.timestamp}', // 必填，生成签名的时间戳
+        nonceStr: '{$jssdk.nonceStr}', // 必填，生成签名的随机串
+        signature: '{$jssdk.signature}',// 必填，签名，见附录1
+        jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+    });
+    wx.ready(function() {
+        wx.onMenuShareTimeline({
+            title: '我要-商品列表', // 分享标题
+            link: 'http://public.diandongshenghuo.com/06/index.php?m=App&c=Index&a=index', // 分享链接
+            imgUrl: $('#share-img').val(), // 分享图标
+            desc: "钱不够了？官人打赏一起购！！！", // 分享描述
+            success: function () {
+                // 用户确认分享后执行的回调函数
+            },
+            cancel: function () {
+                // 用户取消分享后执行的回调函数
+            }
+        });
+        wx.onMenuShareAppMessage({
+            title: '我要-商品列表', // 分享标题
+            desc: "钱不够了？官人打赏一起购！！！", // 分享描述
+            link: 'http://public.diandongshenghuo.com/06/index.php?m=App&c=Index&a=index', // 分享链接
+            imgUrl: $('#share-img').val(), // 分享图标
+            type: 'link', // 分享类型,music、video或link，不填默认为link
+            success: function () {
+                // 用户确认分享后执行的回调函数
+            },
+            cancel: function () {
+                // 用户取消分享后执行的回调函数
+            }
+        });
+    });
+</script>
+</body>
+</html>

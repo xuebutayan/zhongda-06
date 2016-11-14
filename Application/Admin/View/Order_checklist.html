@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>点动打赏-兑换验证</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="__PUBLIC__/Plugin/style/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="__PUBLIC__/Plugin/style/css/feedback-page.css">
+    <!-- Bootstrap theme -->
+    <style>
+        body {
+            background-color: #efeff4;
+            font-family: "Microsoft Yahei", Arial;
+        }
+        .p-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .a-btn {
+            position: absolute;
+            bottom: 40px;
+            right: 112px;
+            border: 1px solid #F00;
+            border-radius: 50px;
+            padding: 10px 20px;
+            color: #F00;
+        }
+        .a-success {
+            border-color: #468847;
+            color: #468847;
+        }
+    </style>
+</head>
+
+<body role="document">
+
+<!-- Fixed navbar -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">点动打赏</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class=""><a href="{:U('Admin/Order/Order_check')}">兑换验证</a></li>
+                <li class="active"><a href="{:U('Admin/Order/getRewardLog', array('rid'=>$redeem_info['id']))}">已兑换列表</a></li>
+            </ul>
+            <ul class="nav navbar-nav pull-right">
+                <li><a href="{:U('Admin/Login/logout')}" >退出</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+
+<div class="container" role="main" style="margin-top: 64px;">
+
+    <table class="table table-bordered table-hover">
+        <tr>
+            <th>编号</th>
+            <th>订单号</th>
+            <th>兑换商品</th>
+            <th>兑换地点</th>
+            <th>兑换时间</th>
+            <th>操作者</th>
+        </tr>
+        <volist name="list" id="vo">
+            <tr>
+            <td>{$vo.id}</td>
+            <td>{$vo.orderid}</td>
+            <td>{$vo.gname}</td>
+            <td>{$vo.rname}</td>
+            <td>{$vo.time}</td>
+            <td>{$vo.admin}</td>
+            </tr>
+        </volist>
+    </table>
+
+</div> <!-- /container -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="__PUBLIC__/Plugin/style/js/jquery-2.0.3.min.js"></script>
+<script src="__PUBLIC__/Plugin/style/js/bootstrap.min.js"></script>
+<script>
+
+</script>
+</body>
+</html>

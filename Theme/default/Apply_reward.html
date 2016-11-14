@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 网页信息 -->
+    <meta name="description" content="点动生活,一切为了生活,山东众达网络有限公司">
+    <meta name="author" content="众达网络-CP">
+    <!-- 网页图标 -->
+    <!--<link rel="shortcut icon" type="image/x-icon" href="__IMG__/favicon.ico">-->
+    <title>我要--{$good_info.name}</title>
+    <!-- Css -->
+    <link rel="stylesheet" href="__CSS__/root.css">
+    <!-- Js -->
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?d98ba0ceddb6602faa3d3fb84470d676";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    <style>
+        .footer ul li:not(:last-child):after {
+            display: block;
+            content: '';
+            position: absolute;
+            top: 12px;
+            width: 1px;
+            height: 24px;
+            right: 0px;
+            background-color: #E0E1E1;
+        }
+    </style>
+</head>
+<body class="reward-info">
+<div class="content">
+    <div class="header">
+        <input type="hidden" name="uid" value="{$m_uid}">
+        <input type="hidden" name="gid" value="{$gid}">
+        <input type="hidden" name="openid" value="{$openid}">
+        <img src="__PUBLIC__{$good_info.savepath}{$good_info.image}" alt="">
+        <input type="hidden" value="http://public.diandongshenghuo.com/__IMG__/share-img.jpg" id="share-img">
+    </div>
+    <div class="container">
+        <div class="options">
+            <div class="info">
+                <p>
+                    亲，赶快点击报名按钮，参加打赏加入我们吧，可以瞬间起飞哟！
+                </p>
+            </div>
+            <ul class="clearfix">
+                <input type="hidden" value="{:U('App/Reward/index', array('openid'=>$openid,'gid'=>$gid))}" id="apply_reward">
+                <li style="width: 50%; margin: 0 auto; float:none;"><a href="javascript:;" onclick="checkApply('{$openid}', {$gid});" class="btn-style">我要报名</a></li>
+            </ul>
+        </div>
+        <div class="reward-rule">
+        </div>
+        <div class="good-detial">
+            <div class="good-bg">
+                <div class="title">
+                    <h3>商品详情</h3>
+                    <p>
+                        <span style="font-size: 12px;color:#FFF;padding-left: 20px;">精美商品，更多惊喜！</span>
+                        <span style="font-size: 12px;color:#FEC23D;display:inline-block; float:right;">更多精彩，不容错过！</span>
+                    </p>
+                </div>
+                <div class="info">
+                    {$good_info.detail}
+                </div>
+                <div class="other-goods">
+                    <h3>您还可已参与以下商品的打赏！</h3>
+                    <div class="other-good-list">
+                        <div class="box1 clearfix">
+                            <volist name="goods_list" id="vo" key="k">
+                                <a href="{:U('App/Apply/apply_reward', array('openid'=>$openid, 'gid'=>$vo['id']))}" style="position: relative;">
+                                    <img src="__PUBLIC__{$vo.savepath}{$vo.image}" alt="">
+                                    <if condition="$vo['is_new'] eq 1">
+                                        <img src="__IMG__/ds-icon-new-02.png" alt="" style="position: absolute; top:0; right:0; width:32px; height: 32px;">
+                                    </if>
+                                </a>
+                            </volist>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <ul>
+            <li style="width: 35%; position: relative;"><a href="{:U('App/Index/index', array('openid'=>$openid))}">商品列表</a></li>
+            <li style="width: 30%; position: relative;"><a href="{:U('App/Share/index', array('openid'=>$openid))}">兑换照</a></li>
+            <li style="width: 35%;"><a href="{:U('App/User/index', array('openid'=>$openid))}">个人中心</a></li>
+        </ul>
+    </div>
+</div>
+
+<!--分享朋友圈操作-->
+<script src="__JS__/jquery.min.js"></script>
+<script src="__JS__/root.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+<script>
+    wx.config({
+        debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        appId: '{$jssdk.appId}', // 必填，公众号的唯一标识
+        timestamp: '{$jssdk.timestamp}', // 必填，生成签名的时间戳
+        nonceStr: '{$jssdk.nonceStr}', // 必填，生成签名的随机串
+        signature: '{$jssdk.signature}',// 必填，签名，见附录1
+        jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+    });
+    wx.ready(function() {
+        wx.onMenuShareTimeline({
+            title: '我要-商品列表', // 分享标题
+            link: 'http://public.diandongshenghuo.com/06/index.php?m=App&c=Index&a=index', // 分享链接
+            imgUrl: $('#share-img').val(), // 分享图标
+            desc: "钱不够了？官人打赏一起购！！！", // 分享描述
+            success: function () {
+                // 用户确认分享后执行的回调函数
+            },
+            cancel: function () {
+                // 用户取消分享后执行的回调函数
+            }
+        });
+        wx.onMenuShareAppMessage({
+            title: '我要-商品列表', // 分享标题
+            desc: "钱不够了？官人打赏一起购！！！", // 分享描述
+            link: 'http://public.diandongshenghuo.com/06/index.php?m=App&c=Index&a=index', // 分享链接
+            imgUrl: $('#share-img').val(), // 分享图标
+            type: 'link', // 分享类型,music、video或link，不填默认为link
+            success: function () {
+                // 用户确认分享后执行的回调函数
+            },
+            cancel: function () {
+                // 用户取消分享后执行的回调函数
+            }
+        });
+    });
+
+    // 校验 用户是否可以报名参与购买该商品
+    function checkApply(_openid, _gid) {
+        $.ajax({
+            url:'{:U("App/Apply/checkApply")}',
+            mothd: 'POST',
+            data:{openid: _openid, gid: _gid},
+            dataType: 'JSON',
+            success: function(res) {
+                if (res.can_apply == 1) {
+                    location.href = $('#apply_reward').val();
+                } else if (res.can_apply == 2) {
+                    if(window.confirm(res.err_msg)) {
+                        location.href = $('#apply_reward').val();
+                    } else {
+                    }
+                } else {
+                    alert(res.err_msg);
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

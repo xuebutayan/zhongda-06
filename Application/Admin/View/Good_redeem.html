@@ -1,0 +1,81 @@
+<include file="Public:header"/>
+<style>
+    ul {
+        margin:0;
+        list-style:none;
+    }
+    #home1 ul li {
+        float: left;
+        padding-right: 15px;
+    }
+    .checkbox-group {
+        position: relative;
+    }
+    .checkbox-group  label {
+        padding-left:15px;
+    }
+    .checkbox-group input[type='checkbox'] {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+</style>
+<div class="col-sm-12 widget-container-span">
+    <div class="widget-box transparent">
+        <div class="widget-header">
+            <div class="widget-toolbar no-border">
+                <ul class="nav nav-tabs" id="myTab">
+                    <li><a href="{:U('Admin/Good/index', array('type'=>'list'))}">商品管理</a></li>
+                    <li><a href="{:U('Admin/Good/getGoodById', array('type'=>'edit'))}">添加/修改商品</a></li>
+                    <li class="active"><a href="{:U('Admin/Good/setGoodRedeem', array('gid'=>$gid))}">分配商品兑换地址</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="widget-body">
+            <div class="widget-main padding-12 no-padding-left no-padding-right">
+                <div class="tab-content padding-4">
+                    <div id="home1" class="tab-pane in active">
+                        <form class="form-horizontal J_ajaxForm" enctype="multipart/form-data" id="myform" action="{:U('Admin/Good/saveRedeem')}" method="post">
+                            <div class="tabbable">
+                                <div class="tab-content">
+                                    <div class="tab-pane active">
+                                        <input type="hidden" value="{$gid}" name="gid">
+                                        <table cellpadding="2" cellspacing="2" width="50%">
+                                            <tbody>
+                                            <tr>
+                                                <td style="width:110px;">商品名称:</td>
+                                                <td>{$good_info.name}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>商品兑换地点:</td>
+                                                <td>
+                                                    <input type="radio" name="can_select" value="1" <eq name="good_info['can_select']" value="1">checked</eq> > 可选择
+                                                    <input type="radio" name="can_select" value="0" <eq name="good_info['can_select']" value="0">checked</eq> > 不可选择
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>兑换地点列表:</td>
+                                                <td>
+                                                    <volist name="redeem_list" id="vo">
+                                                        <ul class="clearfix">{$vo.list}</ul>
+                                                    </volist>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn btn-primary btn_submit J_ajax_submit_btn"
+                                        type="submit">提交</button>
+                                <a class="btn" href="">返回</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

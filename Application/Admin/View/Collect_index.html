@@ -1,0 +1,187 @@
+<include file="Public:header"/>
+<script src="__PUBLIC__/Plugin/style/js/region.js"></script>
+<link rel="stylesheet" href="__PUBLIC__/Plugin/style/css/bootstrap-datepicker.css">
+<style>
+    table td, table th {
+        text-align: center;
+    }
+    table td a {
+        display: block;
+    }
+    .btn-info {
+        font-size: 12px;
+        padding: 5px 10px;
+        border: none;
+        top: -1px;
+        position: relative;
+        left: 10px;
+    }
+    h3 {
+        font-size: 16px;
+        font-weight: 600;
+        font-family: "Microsoft Yahei", Arial;
+    }
+</style>
+<div class="col-sm-12 widget-container-span">
+    <div class="widget-box transparent">
+        <div class="widget-header">
+            <div class="widget-toolbar no-border">
+                <ul class="nav nav-tabs" id="myTab">
+                    <if condition="$type eq 'list'">
+                        <li class="active"><a  href="{:U('Admin/Redeem/collect', array('type'=>'list'))}">我要信息-汇总</a></li>
+                        <li class=""><a  href="{:U('Admin/Redeem/goodCollect', array('type'=>'good'))}">商品兑换-汇总</a></li>
+                        <li class=""><a  href="{:U('Admin/Redeem/redeemCollect', array('type'=>'redeem'))}">兑换地点-汇总</a></li>
+                    </if>
+                    <if condition="$type eq 'good'">
+                        <li class=""><a  href="{:U('Admin/Redeem/collect', array('type'=>'list'))}">我要信息-汇总</a></li>
+                        <li class="active"><a  href="{:U('Admin/Redeem/goodCollect', array('type'=>'good'))}">商品兑换-汇总</a></li>
+                        <li class=""><a  href="{:U('Admin/Redeem/redeemCollect', array('type'=>'redeem'))}">兑换地点-汇总</a></li>
+                    </if>
+                    <if condition="$type eq 'redeem'">
+                        <li class=""><a  href="{:U('Admin/Redeem/collect', array('type'=>'list'))}">我要信息-汇总</a></li>
+                        <li class=""><a  href="{:U('Admin/Redeem/goodCollect', array('type'=>'good'))}">商品兑换-汇总</a></li>
+                        <li class="active"><a  href="{:U('Admin/Redeem/redeemCollect', array('type'=>'redeem'))}">兑换地点-汇总</a></li>
+                    </if>
+                </ul>
+            </div>
+        </div>
+        <div class="widget-body">
+            <div class="widget-main padding-12 no-padding-left no-padding-right">
+                <div class="tab-content padding-4">
+                    <if condition="$type eq 'list'">
+                        <div id="home1" class="tab-pane in active" style="width:75%;">
+                            <h3>我要信息-总记录</h3>
+                            <table class="table table-striped table-bordered table-hover" style="">
+                                <tr>
+                                    <th>总用户数（个）</th>
+                                    <th>报名总人数（个）</th>
+                                    <th>有效报名总人数（个）</th>
+                                    <th>可兑换总人数（个）</th>
+                                    <th>已兑换总人数（个）</th>
+                                    <th>打赏总金额（元）</th>
+                                </tr>
+                                <tr>
+                                    <td>{$total.total_users}</td>
+                                    <td>{$total.apply_nums}</td>
+                                    <td>{$total.valid_nums}</td>
+                                    <td>{$total.can_redeem}</td>
+                                    <td>{$total.redeem_nums}</td>
+                                    <td>{$total.reward_money}</td>
+                                </tr>
+                            </table>
+                            <h3>每日信息</h3>
+                            <form action="{:U('Admin/Redeem/collect')}" method="post" style="margin-bottom: 15px;">
+                                <label for="">日期：</label>
+                                <input type="text" value="{$nowdate}" id="nowdate" name="nowdate" class="input" style="font-size: 12px;">
+                                <input type="submit" value="提交" class="btn btn-info">
+                            </form>
+                            <table class="table table-striped table-bordered table-hover">
+                                <tr>
+                                    <th>日期</th>
+                                    <th>新增用户</th>
+                                    <th>新增订单</th>
+                                    <th>打赏金额</th>
+                                    <th>已兑换订单（个）</th>
+                                </tr>
+                                <tr>
+                                    <td>{$nowdate}</td>
+                                    <volist name="now_info" id="vo">
+                                        <td>{$vo.user_num}</td>
+                                        <td>{$vo.order_num}</td>
+                                        <td>{$vo.reward}</td>
+                                        <td>{$vo.redeem}</td>
+                                    </volist>
+                                </tr>
+                            </table>
+                        </div>
+                    </if>
+                    <if condition="$type eq 'good'">
+                        <div id="home2" class="tab-pane in active" style="width:75%;">
+                            <h3>商品兑换信息汇总</h3>
+                            <table class="table table-striped table-bordered table-hover">
+                                <tr>
+                                    <th>编号</th>
+                                    <th>商品名称</th>
+                                    <th>已报名（个）</th>
+                                    <th>有效报名（个）</th>
+                                    <th>可兑换（个）</th>
+                                    <th>已兑换（个）</th>
+                                    <th>已打赏（元）</th>
+                                </tr>
+                                <tr>
+                                    <volist name="good" id="vo">
+                                <tr>
+                                    <td>{$vo.id}</td>
+                                    <td style="text-align: left; padding-left: 25px;">{$vo.name}</td>
+                                    <td>{$vo.apply_nums}</td>
+                                    <td>{$vo.valid_nums}</td>
+                                    <td><a href="{:U('Admin/Order/index', array('gid'=>$vo['id'], 'order_status'=>2))}">{$vo.can_redeem}</a></td>
+                                    <td><a href="{:U('Admin/Order/index', array('gid'=>$vo['id'], 'order_status'=>3))}">{$vo.redeem_nums}</a></td>
+                                    <td>{$vo.reward_money}</td>
+                                </tr>
+                                </volist>
+                                </tr>
+                            </table>
+                        </div>
+                    </if>
+                    <if condition="$type eq 'redeem'">
+                        <div id="home3" class="tab-pane in active" style="width:75%;">
+                            <h3>兑换地点信息汇总</h3>
+                            <form action="{:U('Admin/Redeem/redeemCollect')}" method="post" style="margin-bottom: 15px;">
+                                <label for="">选择兑换地点：</label>
+                                <select name="redeem" id="">
+                                    <volist name="redeem_list" id="vo">
+                                        <if condition="$redeem eq $vo['id']">
+                                            <option value="{$vo.id}" selected>{$vo.name}</option>
+                                            <else/>
+                                            <option value="{$vo.id}">{$vo.name}</option>
+                                        </if>
+                                    </volist>
+                                </select>
+                                <input type="submit" value="提交" class="btn btn-info">
+                            </form>
+                            <table class="table table-striped table-bordered table-hover">
+                                <tr>
+                                    <th>商品名称</th>
+                                    <volist name="redeems" id="vo">
+                                        <th>{$vo.name}-可兑换（个）</th>
+                                        <th>{$vo.name}-已兑换（个）</th>
+                                    </volist>
+                                </tr>
+                                <volist name="redeem_info" id="vo">
+                                    <tr>
+                                        <td style="text-align: left; padding-left: 25px;">{$vo.name}</td>
+                                        <td>
+                                            <if condition="$vo['can_redeem'] neq 0">
+                                                <a href="{:U('Admin/Order/index', array('gid'=>$vo['id'],'redeem'=>$vo['redeem'], 'order_status'=>2))}">{$vo.can_redeem}</a>
+                                                <else/>
+                                                {$vo.can_redeem}
+                                            </if>
+                                        </td>
+                                        <td>
+                                            <if condition="$vo['redeem_nums'] neq 0">
+                                                <a href="{:U('Admin/Order/index', array('gid'=>$vo['id'],'redeem'=>$vo['rid'], 'order_status'=>3))}">{$vo.redeem_nums}</a>
+                                                <else/>
+                                                {$vo.redeem_nums}
+                                            </if>
+
+                                        </td>
+                                    </tr>
+                                </volist>
+                            </table>
+                        </div>
+                    </if>
+                </div>
+            </div>
+        </div>
+        <script src="__PUBLIC__/Plugin/style/js/bootstrap-datepicker.js"></script>
+        <script src="__PUBLIC__/Plugin/style/js/bootstrap-datepicker.zh-CN.js"></script>
+        <script type="text/javascript">
+            $('#nowdate').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                language: 'zh-CN'
+            });
+        </script>
+    </div>
+</div>

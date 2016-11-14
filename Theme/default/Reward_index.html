@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 网页信息 -->
+    <meta name="description" content="点动生活,一切为了生活,山东众达网络有限公司">
+    <meta name="author" content="众达网络-CP">
+    <!-- 网页图标 -->
+    <!--<link rel="shortcut icon" type="image/x-icon" href="__IMG__/favicon.ico">-->
+    <title>{$user_info.wx_nickname}：我要--{$good_info.name},快来打赏他吧</title>
+    <!-- Css -->
+    <link rel="stylesheet" href="__CSS__/root.css">
+    <!-- Js -->
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?d98ba0ceddb6602faa3d3fb84470d676";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    <style>
+        .footer ul li:not(:last-child):after {
+            display: block;
+            content: '';
+            position: absolute;
+            top: 12px;
+            width: 1px;
+            height: 24px;
+            right: 0px;
+            background-color: #E0E1E1;
+        }
+    </style>
+</head>
+<body class="reward-info">
+<div class="content">
+    <div class="header">
+        <input type="hidden" name="uid" value="{$m_uid}">
+        <input type="hidden" name="oid" value="{$oid}">
+        <input type="hidden" name="gid" value="{$gid}">
+        <input type="hidden" name="openid" value="{$openid}">
+        <img src="__PUBLIC__{$good_info.savepath}{$good_info.image}" alt="">
+        <input type="hidden" id="share-link" value="http://public.diandongshenghuo.com/06/index.php?m=App&c=Reward&a=index&uid={$f_uid}&gid={$gid}&oid={$oid}">
+        <input type="hidden" id="pay—callback" value="http://public.diandongshenghuo.com/06/index.php?m=App&c=Reward&a=index&uid={$f_uid}&gid={$gid}&oid={$oid}&openid={$openid}">
+        <input type="hidden" id="share-img" value="http://public.diandongshenghuo.com/__PUBLIC__{$good_info.savepath}{$good_info.image}">
+        <input type="hidden" value="{:U('App/Reward/index', array('openid'=>$openid,'gid'=>$gid))}" id="apply_reward">
+    </div>
+    <div class="container">
+        <div class="options">
+            <div class="info">
+                <p>
+                    <span class="">亲，</span>
+                    恭喜您已获得
+                    <span style="display:inline-block; padding: 0 5px;">{$order_info.has_people}</span>
+                    位好友的赏赐，为您节省了
+                    <span style="display:inline-block; padding: 0 5px;">{$order_info.save_money}</span>
+                    元大洋！距离拿下该商品仅剩
+                    <span style="display:inline-block; padding: 0 5px;">{$order_info.surplus_price}</span>
+                    元
+                    <if condition="$order_info['surplus_price'] eq 0">
+                        ，您的好友都太‘有劲’啦，已经打赏成功了，快点去兑换吧！
+                        <else/>
+                        喽，快去分享给你的朋友，让他们来打赏吧！
+                    </if>
+
+                </p>
+            </div>
+            <ul class="clearfix">
+                <if condition="$canapply eq 1 && $m_uid neq $f_uid">
+                    <if condition="$good_info['money_pay_style'] eq 1">
+                        <li><a href="javascript:;" onclick="checkApply('{$openid}', {$gid})"  class="btn-style">我要报名</a></li>
+                        <li><a class="btn-style wx-pay wx-pay-1" href="javascript:;" onclick="javascript:callpay(1);">打赏1元</a></li>
+                        <li><a class="btn-style wx-pay wx-pay-5" href="javascript:;" onclick="javascript:callpay(0.5);">打赏0.5元</a></li>
+                    </if>
+                    <if condition="$good_info['money_pay_style'] eq 0">
+                        <li style="width: 50%;"><a href="javascript:;" onclick="checkApply('{$openid}', {$gid})"  class="btn-style">我要报名</a></li>
+                        <li style="width: 50%;"><a class="btn-style wx-pay wx-pay-1" href="javascript:;" onclick="javascript:callpay(1);">打赏1元</a></li>
+                    </if>
+                </if>
+                <if condition="$m_uid eq $f_uid && $order_info['surplus_price'] eq 0">
+                    <li style="width:100%;"><a class="btn-style" href="{:U('App/Apply/index', array('openid'=>$openid, 'uid'=>$m_uid, 'gid'=>$gid, 'oid'=>$oid))}" >兑换商品</a></li>
+                </if>
+                <if condition="$m_uid eq $f_uid && $order_info['surplus_price'] neq 0">
+                    <if condition="$good_info['money_pay_style'] eq 1">
+                        <li style="width: 50%;"><a class="btn-style wx-pay wx-pay-1" href="javascript:;" onclick="javascript:callpay(1);">打赏1元</a></li>
+                        <li style="width: 50%;"><a class="btn-style wx-pay wx-pay-5" href="javascript:;" onclick="javascript:callpay(0.5);">打赏0.5元</a></li>
+                        <else/>
+                        <li style="width: 50%; float:none; margin: 0 auto;"><a class="btn-style wx-pay wx-pay-1" href="javascript:;" onclick="javascript:callpay(1);">打赏1元</a></li>
+                    </if>
+                </if>
+            </ul>
+        </div>
+        <div class="reward-users">
+            <h3>打赏榜 <span style="font-size: 12px;display: inline-block; float:right;line-height: 18px;padding-right: 10px;">打赏后，均可获得摇一摇机会</span></h3>
+            <div class="scroll" id="scrollDiv">
+                <if condition="$reward_list neq null">
+                    <ul>
+                    <volist name="reward_list" id="reward">
+                        <li class="clearfix scroll-li">
+                            <div class="r-u-info">
+                                <img src="{$reward.wx_headimgurl}" alt="">
+                                <div style="display: inline-block;float: left;width: 80%;height: 48px;">
+                                    <p>
+                                        <span class="font-style">{$reward.wx_nickname}</span>打赏了您<span class="price font-style">{$reward.r_money}元</span>
+                                    </p>
+                                    <p>{$reward.publicity}</p>
+                                </div>
+                            </div>
+                        </li>
+                    </volist>
+                    </ul>
+                   <else/>
+                    <img src="__IMG__/ds-bg-reward-none.png" alt="" style="width: 50%;display: block;margin: 0 auto;padding-top: 74px;">
+                </if>
+            </div>
+        </div>
+        <div class="reward-rule">
+        </div>
+        <div class="good-detial">
+            <div class="good-bg">
+                <div class="title">
+                    <h3>商品详情</h3>
+                    <p>
+                        <span style="font-size: 12px;color:#FFF;padding-left: 20px;">精美商品，更多惊喜！</span>
+                        <span style="font-size: 12px;color:#FEC23D;display:inline-block; float:right;">更多精彩，不容错过！</span>
+                    </p>
+                </div>
+                <div class="info">
+                    {$good_info.detail}
+                </div>
+                <div class="other-goods">
+                    <h3>您还可以参与以下商品的打赏！</h3>
+                    <div class="other-good-list">
+                        <div class="box1 clearfix">
+                            <volist name="goods_list" id="vo" key="k">
+                                <a href="{:U('App/Apply/apply_reward', array('openid'=>$openid, 'gid'=>$vo['id']))}" style="position: relative;">
+                                    <img src="__PUBLIC__{$vo.savepath}{$vo.image}" alt="">
+                                    <if condition="$vo['is_new'] eq 1">
+                                        <img src="__IMG__/ds-icon-new-02.png" alt="" style="position: absolute; top:0; right:0; width:32px; height:32px;">
+                                    </if>
+                                </a>
+                            </volist>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <ul>
+            <li style="width: 35%; position: relative;"><a href="{:U('App/Index/index', array('openid'=>$openid))}">商品列表</a></li>
+            <li style="width: 30%; position: relative;"><a href="{:U('App/Share/index', array('openid'=>$openid))}">兑换照</a></li>
+            <li style="width: 35%;"><a href="{:U('App/User/index', array('openid'=>$openid))}">个人中心</a></li>
+        </ul>
+    </div>
+    <div class="model">
+        <div class="main">
+            <img src="__IMG__/ds-bg-yaoyiyao.png" alt="" style="display:block; width: 100%; height: 375px; ">
+            <a href="http://public.diandongshenghuo.com/06/index.php?m=App&c=Reward&a=index&uid={$f_uid}&gid={$gid}&oid={$oid}" class="close" id="close">
+                <img src="__IMG__/ds-icon-close.png" alt="">
+            </a>
+            <div class="model-body">
+                <p style="font-size: 21px; font-weight: 600; padding: 5px 0px;">恭喜您</p>
+                <p style="font-size: 14px;">获得一次摇一摇机会</p>
+                <p style="font-size: 14px;">商家送百万豪礼</p>
+            </div>
+            <div class="" style="position:absolute; top: 86%; width: 100%; z-index:99;">
+                <a href="{:U('App/User/duiba', array('uid'=>$m_uid))}" class="confirm">
+                    <img src="__IMG__/ds-icon-btn.png" alt="">
+                </a>
+            </div>
+
+        </div>
+        <div class="mask"></div>
+    </div>
+</div>
+
+<!--分享朋友圈操作-->
+<script src="__JS__/jquery.min.js"></script>
+<script src="__JS__/root.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+<script type="text/javascript">
+    $(function() {
+        setBgHeight('.reward-info .content');
+        _height = $(window).height();
+        $('.model').height(_height);
+    });
+</script>
+<script>
+    wx.config({
+        debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        appId: '{$jssdk.appId}', // 必填，公众号的唯一标识
+        timestamp: '{$jssdk.timestamp}', // 必填，生成签名的时间戳
+        nonceStr: '{$jssdk.nonceStr}', // 必填，生成签名的随机串
+        signature: '{$jssdk.signature}',// 必填，签名，见附录1
+        jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+    });
+    wx.ready(function() {
+        wx.onMenuShareTimeline({
+            title: $('#share-title').val(), // 分享标题
+            link: $('#share-link').val(), // 分享链接
+            imgUrl: $('#share-img').val(), // 分享图标
+            desc: "{$desc}", // 分享描述
+            success: function () {
+                // 用户确认分享后执行的回调函数
+            },
+            cancel: function () {
+                // 用户取消分享后执行的回调函数
+            }
+        });
+        wx.onMenuShareAppMessage({
+            title: $('#share-title').val(), // 分享标题
+            desc: "{$desc}", // 分享描述
+            link: $('#share-link').val(), // 分享链接
+            imgUrl: $('#share-img').val(), // 分享图标
+            type: 'link', // 分享类型,music、video或link，不填默认为link
+            success: function () {
+                // 用户确认分享后执行的回调函数
+            },
+            cancel: function () {
+                // 用户取消分享后执行的回调函数
+            }
+        });
+    });
+</script>
+<script src="__JS__/jquery.scroll.js"></script>
+<script type="text/javascript">
+    //调用微信JS api 支付
+    function jsApiCall(parameters) {
+        var obj = eval('(' + parameters + ')');
+        WeixinJSBridge.invoke(
+                'getBrandWCPayRequest',
+                obj,
+                function (res) {
+                    $('.wx-pay-1').attr('onclick', 'callpay(1);');
+                    $('.wx-pay-5').attr('onclick', 'callpay(0.5);');
+                    if (res.err_msg == "get_brand_wcpay_request:ok") {
+                        $('.model').show();
+                    } else {
+
+                    }
+                }
+
+        );
+    }
+
+    function callpay(price) {
+        if (typeof WeixinJSBridge == "undefined"){
+            if( document.addEventListener ){
+                document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+            }else if (document.attachEvent){
+                document.attachEvent('WeixinJSBridgeReady', jsApiCall);
+                document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+            }
+        }else{
+            $('.wx-pay').attr('onclick', 'return false;');
+            $.ajax({
+                url:'{:U("App/Reward/WxPay")}',
+                method:'POST',
+                dataType:'JSON',
+                data: {pay_price:price, uid:$('input[name="uid"]').val(),oid:$('input[name="oid"]').val(),gid:$('input[name="gid"]').val(),openid:$('input[name="openid"]').val(),},
+                success: function(res) {
+                    if (res.is_err == '0') {
+                        jsApiCall(res.jsApi);
+                    } else {
+                        alert(res.err_msg);
+                    }
+                }
+            });
+        }
+    }
+
+    $(document).ready(function(){
+        var length = $('#scrollDiv ul li.scroll-li').length;
+        if (length >= 6) {
+            $("#scrollDiv").Scroll({line:1,speed:2000,timer:1000,up:"but_up",down:"but_down"});
+        }
+
+    });
+
+    // 校验 用户是否可以报名参与购买该商品
+    function checkApply(_openid, _gid) {
+        $.ajax({
+            url:'{:U("App/Apply/checkApply")}',
+            mothd: 'POST',
+            data:{openid: _openid, gid: _gid},
+            dataType: 'JSON',
+            success: function(res) {
+                if (res.can_apply == 1) {
+                    location.href = $('#apply_reward').val();
+                } else {
+                    alert(res.err_msg);
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

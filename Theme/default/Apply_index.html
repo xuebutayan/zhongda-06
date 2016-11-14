@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- 网页信息 -->
+    <meta name="description" content="点动生活,一切为了生活,山东众达网络有限公司">
+    <meta name="author" content="众达网络-CP">
+    <!-- 网页图标 -->
+    <!--<link rel="shortcut icon" type="image/x-icon" href="__IMG__/favicon.ico">-->
+    <title>我要-填写兑换信息</title>
+    <!-- Css -->
+    <link rel="stylesheet" href="__CSS__/root.css">
+    <!-- Js -->
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?d98ba0ceddb6602faa3d3fb84470d676";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    <style>
+        .footer ul li:not(:last-child):after {
+            display: block;
+            content: '';
+            position: absolute;
+            top: 12px;
+            width: 1px;
+            height: 24px;
+            right: 0px;
+            background-color: #E0E1E1;
+        }
+    </style>
+
+</head>
+<body class="detial-info">
+<div class="content">
+    <!-- 提示信息 -->
+    <div class="notice_info">
+        <p class="font-bg">恭喜您！</p>
+        <p>该产品已可兑换</p>
+    </div>
+    <div class="container">
+        <div class="detial-box">
+
+            <if condition="$is_apply['order_status'] eq 2 && $is_apply['is_apply'] eq 0">
+                <form action="" method="post" id="apply-form">
+                    <input type="hidden" value="{$oid}" name="oid">
+                    <div class="user-header" id="header">
+                        <img src="{$user_info.wx_headimgurl}" alt="">
+                        <p>{$user_info.wx_nickname}</p>
+                    </div>
+                    <p class="order-num">订单号:{$orderid}</p>
+                    <div class="form-group">
+                        <label for="" class="order_name">订单名称：</label>
+                        <p>{$good_info.name}</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="order_price">订单金额：</label>
+                        <p>{$good_info.totalprice}元</p>
+                    </div>
+                    <if condition="$good_info['can_select'] eq 1">
+                        <div class="form-group">
+                            <label for="" class="address">兑换地点：</label>
+                            <select name="redeem" id="" onchange="getDetailAdress(this);">
+                                <option value="0">请选择</option>
+                                <volist name="redeem_list" id="vo">
+                                    <option value="{$vo.id}">{$vo.city}市-{$vo.district}</option>
+                                </volist>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="" class="address" style="vertical-align: top;">详细地址：</label>
+                            <p id="address" style="padding: 0px;">你还没选择兑换地点哦！</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="" class="address" style="vertical-align: middle;">联系方式：</label>
+                            <p id="mobile">你还没选择兑换地点哦！</p>
+                        </div>
+                        <else/>
+                        <h4 style="text-align: center;">兑换地址列表</h4>
+                        <ul class="redeem_list">
+                            <volist name="redeem_list" id="vo" key="k">
+                                <li>
+                                    <div class="form-group">
+                                        <label for="" class="sort"><i>{$k}</i>详细地址：</label>
+                                        <p>{$vo.name}&nbsp;-{$vo.address}</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="" class="">联系方式：</label>
+                                        <p>{$vo.mobile}</p>
+                                    </div>
+                                </li>
+                            </volist>
+                        </ul>
+                    </if>
+                    <if condition="$good_info['can_select'] eq 1">
+                        <button type="button" id="apply-btn" class="submit-btn">提交信息</button>
+                    </if>
+                </form>
+            </if>
+            <if condition="$is_apply['order_status'] eq 3 || $is_apply['is_apply'] eq 1">
+                    <input type="hidden" value="{$oid}" name="oid">
+                    <div class="user-header" id="header">
+                        <img src="{$user_info.wx_headimgurl}" alt="">
+                        <p>{$user_info.wx_nickname}</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="address">当前订单：</label>
+                        <if condition="$is_apply['order_status'] eq 3">
+                            <p style="color: #F00;">已兑换</p>
+                            <else/>
+                            <p style="color: #F00;">未兑换</p>
+                        </if>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="address">兑换地点：</label>
+                        <p>{$is_apply.city}市&nbsp;{$is_apply.district}</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="address">详细地址：</label>
+                        <p>{$is_apply.rname}&nbsp;-{$is_apply.address}</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="mobile">联系方式：</label>
+                        <p>{$is_apply.rmobile}</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="order_name">订单名称：</label>
+                        <p>{$good_info.name}</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="" class="order_price">订单金额：</label>
+                        <p>{$good_info.totalprice}元</p>
+                    </div>
+                    <p class="order-num" style="margin: 15px 0;">订单号:{$orderid}</p>
+            </if>
+        </div>
+    </div>
+    <div class="footer">
+        <ul>
+            <li style="width: 35%; position: relative;"><a href="{:U('App/Index/index', array('openid'=>$openid))}">商品列表</a></li>
+            <li style="width: 30%; position: relative;"><a href="{:U('App/Share/index', array('openid'=>$openid))}">兑换照</a></li>
+            <li style="width: 35%;"><a href="{:U('App/User/index', array('openid'=>$openid))}">个人中心</a></li>
+        </ul>
+    </div>
+</div>
+<script src="__JS__/jquery.min.js"></script>
+<script>
+    function getDetailAdress(object) {
+        $.getJSON("{:U('Api/Redeem/getDetailAdress')}",{ rid:$(object).val()},
+             function(data){
+                if(data.is_err == 0){
+                    $('#address').prev().css('vertical-align:top;');
+                    $('#address').html(data.res.name+'&nbsp;-'+data.res.address);
+                    $('#mobile').html(data.res.mobile);
+                }else{
+                    $('#address').html('你还没有选择兑换地址哦！');
+                    $('#mobile').html('你还没有选择兑换地址哦！');
+                }
+            }
+         );
+    }
+    $(function() {
+        $('#apply-btn').on('click', function() {
+           var oid = $('input[name="oid"]').val();
+           var redeem = $('select[name="redeem"]').val();
+           $.ajax({
+               url:"{:U('App/Apply/saveApplyInfo')}",
+               method: "POST",
+               dataType: "JSON",
+               data: {oid:oid, redeem:redeem},
+               success: function(res) {
+                    if (res.is_err == 0) {
+                        alert('信息录入成功，请到指定地点，凭借订单号兑换商品');
+                        location.reload(true);
+                    }
+               }
+           });
+        });
+		
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,303 @@
+<include file="Public:header"/>
+<link rel="stylesheet" href="__PUBLIC__/Plugin/style/css/bootstrap-datetimepicker.min.css">
+<script src="__PUBLIC__/Plugin/style/js/region.js"></script>
+<div class="col-sm-12 widget-container-span">
+    <div class="widget-box transparent">
+        <div class="widget-header">
+            <div class="widget-toolbar no-border">
+                <ul class="nav nav-tabs" id="myTab">
+                    <li <eq name="type" value="index">class="active"</eq> ><a  href="{:U('Admin/Redeem/index')}">兑换地点列表</a></li>
+                    <li <eq name="type" value="edit">class="active"</eq> ><a  href="{:U('Admin/Redeem/edit')}">添加/修改-兑换地点</a></li>
+                    <li <eq name="type" value="parent">class="active"</eq> ><a  href="{:U('Admin/Redeem/ParentList')}">一级分类列表</a></li>
+                    <li <eq name="type" value="parent_edit">class="active"</eq> ><a  href="{:U('Admin/Redeem/parent_edit')}">添加一级分类</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="widget-body">
+            <div class="widget-main padding-12 no-padding-left no-padding-right">
+                <div class="tab-content padding-4">
+                    <if condition="$type eq 'index'">
+                        <div id="home1" class="tab-pane in active">
+                            <div class="row">
+                                <div class="col-xs-12 no-padding-right">
+                                    <div class="table-responsive">
+                                        <table id="sample-table-1"
+                                               class="table table-striped table-bordered table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th>编号</th>
+                                                <th>兑换地点名称</th>
+                                                <th>所属一级分类</th>
+                                                <th>兑换地点地址</th>
+                                                <th>联系方式</th>
+                                                <th>兑换开始时间</th>
+                                                <th>兑换结束时间</th>
+                                                <th>是否显示</th>
+                                                <th>添加时间</th>
+                                                <th>操作</th>
+                                            </tr>
+                                            </thead>
+
+                                            <tbody>
+                                            <volist name="result" id="result">
+                                                <tr>
+                                                    <td>{$result.id}</td>
+                                                    <td>{$result.name}</td>
+                                                    <td>{$result.parent_name}</td>
+                                                    <td>{$result.address}</td>
+                                                    <td>{$result.mobile}</td>
+                                                    <td>{$result.start_time}</td>
+                                                    <td>{$result.end_time}</td>
+                                                    <td>
+                                                        <span class="label label-info">{$result.red_show}</span>
+                                                    </td>
+                                                    <td>{$result.time}</td>
+                                                    <td>
+                                                        <a href="{:U('Admin/Redeem/edit', array('id'=>$result['id']))}"  class="btn btn-white btn-sm">编辑</a>
+                                                        <a class="btn btn-white btn-sm" href="{:U('Admin/Redeem/del',array('id'=>$result['id']))}">删除</a>
+                                                    </td>
+                                                </tr>
+                                            </volist>
+                                            </tbody>
+                                        </table>
+                                        <div class="pagination" style="margin:0px;">
+                                            {$page}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </if>
+                    <if condition="$type eq 'edit'">
+                        <div id="home2" class="tab-pane in active">
+                            <form class="form-horizontal J_ajaxForm" enctype="multipart/form-data" id="myform" action="{:U('Admin/Redeem/save')}" method="post">
+                                <div class="tabbable">
+                                    <div class="tab-content">
+                                        <div class="tab-pane active">
+                                            <table cellpadding="2" cellspacing="2" width="100%">
+                                                <tbody>
+                                                <tr>
+                                                    <td>一级分类选择:</td>
+                                                    <td>
+                                                        <select name="parent_id" id="parent">
+                                                            <volist name="parent_list" id="vo">
+                                                                <if condition="$redeem_res['parent_id'] eq $vo['id']">
+                                                                    <option value="{$vo.id}" selected >{$vo.name}</option>
+                                                                    <else/>
+                                                                    <option value="{$vo.id}" >{$vo.name}</option>
+                                                                </if>
+                                                            </volist>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>兑换地点名称:</td>
+                                                    <td><input type="text" class="input col-sm-6" name="name" value="{$redeem_res.name}"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>兑换地点地区:</td>
+                                                    <td>
+                                                        <select name="province" id="province" onchange="loadRegion('province',2,'city','{:U(\'Api/Region/getRegion\')}');">
+                                                            <volist name="province" id="vo">
+                                                                <option value="{$vo.region_id}" selected >{$vo.region_name}</option>
+                                                            </volist>
+                                                        </select>
+                                                        <select name="city" id="city"  onchange="loadRegion('city',3,'district','{:U(\'Api/Region/getRegion\')}');">
+                                                            <volist name="city" id="vo">
+                                                                <if condition="$vo.region_id eq $city_id">
+                                                                    <option value="{$vo.region_id}" selected >{$vo.region_name}</option>
+                                                                    <else/>
+                                                                    <option value="{$vo.region_id}" >{$vo.region_name}</option>
+                                                                </if>
+                                                            </volist>
+                                                        </select>
+                                                        <select name="district" id="district">
+                                                            <option value="0">镇/区</option>
+                                                            <volist name="district_list" id="vo">
+                                                                <if condition="$vo.region_id eq $district_id">
+                                                                    <option value="{$vo.region_id}" selected >{$vo.region_name}</option>
+                                                                    <else/>
+                                                                    <option value="{$vo.region_id}" >{$vo.region_name}</option>
+                                                                </if>
+                                                            </volist>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>兑换地点详细地址:</td>
+                                                    <td>
+                                                        <input type="text" class="input col-sm-6" name="address" value="{$redeem_res.address}">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>兑换地点联系方式:</td>
+                                                    <td>
+                                                        <input type="text" class="input col-sm-6" name="mobile" value="{$redeem_res.mobile}">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>兑换地点服务时间:</td>
+                                                    <td>
+                                                        <label for="">开始时间：</label>
+                                                        <input type="text" class="input" id="beginDate" name="start_time" value="{$redeem_res.start_time}">
+                                                        <label for="">结束时间：</label>
+                                                        <input type="text" class="input" id="endDate" name="end_time" value="{$redeem_res.end_time}">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>兑换地点图片</td>
+                                                    <td><input multiple="multiple" type="file" name="addimage">
+                                                        <if condition="$redeem_res.image neq ''">
+                                                            <img src="__PUBLIC__{$redeem_res.savepath}{$redeem_res.image}" alt="">
+                                                        </if>
+                                                        <p class="help-block">允许的附件文件类型: jpg,gif,png,jpeg并且图片大小小于200k.</p></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>兑换地点通知：</td>
+                                                    <td>
+                                                        <textarea name="notice" id="" class="input col-sm-6" rows="5">{$redeem_res.notice}</textarea>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>是否显示:</td>
+                                                    <td>
+                                                        <select name="status">
+                                                            <if condition="$redeem_res.status eq 1">
+                                                                <option value="1" selected>显示</option>
+                                                                <option value="0">隐藏</option>
+                                                                <else/>
+                                                                <option value="1">显示</option>
+                                                                <option value="0" selected>隐藏</option>
+                                                            </if>
+
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <input type="hidden" value="{$redeem_res.id}" name="id">
+                                    <button class="btn btn-primary btn_submit J_ajax_submit_btn"
+                                            type="submit">提交</button>
+                                    <a class="btn" href="">返回</a>
+                                </div>
+                            </form>
+                        </div>
+                    </if>
+                    <if condition="$type eq 'parent'">
+                        <div id="home3" class="tab-pane in active">
+                            <div class="row">
+                                <div class="col-xs-12 no-padding-right">
+                                    <div class="table-responsive" >
+                                        <table id="sample-table-1"
+                                               class="table table-striped table-bordered table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th>编号</th>
+                                                <th>一级分类名称</th>
+                                                <th>一级分类地址</th>
+                                                <th>联系方式</th>
+                                                <th>是否显示</th>
+                                                <th>添加时间</th>
+                                                <th>操作</th>
+                                            </tr>
+                                            </thead>
+
+                                            <tbody>
+                                            <volist name="result" id="result">
+                                                <tr>
+                                                    <td>{$result.id}</td>
+                                                    <td>{$result.name}</td>
+                                                    <td>{$result.address}</td>
+                                                    <td>{$result.mobile}</td>
+                                                    <td>
+                                                        <span class="label label-info">{$result.red_show}</span>
+                                                    </td>
+                                                    <td>{$result.time}</td>
+                                                    <td>
+                                                        <a href="{:U('Admin/Redeem/parent_edit', array('id'=>$result['id']))}"  class="btn btn-white btn-sm">编辑</a>
+                                                        <a class="btn btn-white btn-sm" href="{:U('Admin/Redeem/del',array('id'=>$result['id']))}">删除</a>
+                                                    </td>
+                                                </tr>
+                                            </volist>
+                                            </tbody>
+                                        </table>
+                                        <div class="pagination" style="margin:0px;">
+                                            {$page}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </if>
+                    <if condition="$type eq 'parent_edit'">
+                        <div id="home4" class="tab-pane in active">
+                            <form class="form-horizontal J_ajaxForm" enctype="multipart/form-data" id="myform" action="{:U('Admin/Redeem/saveParent')}" method="post">
+                                <div class="tabbable">
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" style="width: 60%;">
+                                            <table cellpadding="2" cellspacing="2" width="100%">
+                                                <tbody>
+                                                <tr>
+                                                    <td>一级分类名称:</td>
+                                                    <td><input type="text" class="input col-sm-6" name="name" value="{$redeem_res.name}"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>一级分类详细地址:</td>
+                                                    <td>
+                                                        <input type="text" class="input col-sm-6" name="address" value="{$redeem_res.address}">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>一级分类联系方式:</td>
+                                                    <td>
+                                                        <input type="text" class="input col-sm-6" name="mobile" value="{$redeem_res.mobile}">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>是否显示:</td>
+                                                    <td>
+                                                        <select name="status">
+                                                            <if condition="$redeem_res.status eq 1">
+                                                                <option value="1" selected>显示</option>
+                                                                <option value="0">隐藏</option>
+                                                                <else/>
+                                                                <option value="1">显示</option>
+                                                                <option value="0" selected>隐藏</option>
+                                                            </if>
+
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <input type="hidden" value="{$redeem_res.id}" name="id">
+                                    <button class="btn btn-primary btn_submit J_ajax_submit_btn"
+                                            type="submit">提交</button>
+                                    <a class="btn" href="">返回</a>
+                                </div>
+                            </form>
+                        </div>
+                    </if>
+                </div>
+            </div>
+        </div>
+        <script src="__PUBLIC__/Plugin/style/js/bootstrap-datetimepicker.min.js"></script>
+        <script src="__PUBLIC__/Plugin/style/js/bootstrap-datetimepicker.zh-CN.js"></script>
+        <script type="text/javascript">
+            $('#beginDate, #endDate').datetimepicker({
+                format: 'hh:ii',
+                autoclose: true,
+                language: 'zh-CN',
+                startView: 1
+            });
+        </script>
+    </div>
+</div>
