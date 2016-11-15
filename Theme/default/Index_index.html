@@ -108,11 +108,11 @@
             <!-- 分页显示 -->
             <div class="page">
                 <if condition="$nowpage egt 2">
-                    <a href="{:U('App/Index/index', array('type'=>$type, 'nowpage'=>$nowpage-1))}">上一页</a>
+                    <a href="{:U('App/Index/index', array('type'=>$type, 'nowpage'=>$nowpage-1))}{:urldecode($request_str)}">上一页</a>
                 </if>
                 <span>第{$nowpage}页/共{$goods_all}页</span>
                 <if condition="$nowpage lt $goods_all">
-                    <a href="{:U('App/Index/index', array('type'=>$type, 'nowpage'=>$nowpage+1))}">下一页</a>
+                    <a href="{:U('App/Index/index', array('type'=>$type, 'nowpage'=>$nowpage+1))}{:urldecode($request_str)}">下一页</a>
                 </if>
             </div>
         </div>
