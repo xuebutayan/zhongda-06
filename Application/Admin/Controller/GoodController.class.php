@@ -24,7 +24,7 @@ class GoodController extends PublicController {
 		$field = " *, old_price  as shopping_price";
 		$oby = " sort DESC, id DESC ";
 		$result = $m-> field($field) -> order($oby) -> limit ( $Page->firstRow . ',' . $Page->listRows )->select ();
-		
+
 		$this->assign ( "page", $show ); // 赋值分页输出
 		$this->assign ( "result", $result );
 		$this->assign ('type', $type);
@@ -47,6 +47,9 @@ class GoodController extends PublicController {
 			$data ["price"] = $datagood["price"];
 			$data ["is_new"] = $datagood["is_new"];
 			$data ["sort"] = $datagood["addsort"];
+			$data['province'] = $datagood["province"];
+			$data['city'] = $datagood["city"];
+			$data['district'] = $datagood["district"];
 
 			// 添加打赏金额及限购次数管理
 			$data ["is_limit"] = $datagood['is_limit'];
@@ -144,6 +147,31 @@ class GoodController extends PublicController {
 			$this->assign('result', $result);
 			$this->assign('goodid', $id);
 		}
+		//省列表
+		$provinces = M('Region')->field('region_id,region_name')->where('parent_id=1 ')->select();
+		$new_provinces = '';
+		foreach ($provinces as $v) {
+			$new_provinces .= "<option value=".$v[region_id].($v['region_id']==$result['province']?' selected':'')."> $v[region_name] </option>";
+		}
+		//市列表
+		if($result['province']){
+			$citys = M('Region')->field('region_id,region_name')->where(array('parent_id'=>$result['province']))->select();
+			$new_citys = '';
+			foreach ($citys as $v) {
+				$new_citys .= "<option value=".$v[region_id].($v['region_id']==$result['city']?' selected':'')."> $v[region_name] </option>";
+			}
+			$this->assign('new_citys',$new_citys);
+		}
+		//区列表
+		if($result['city']){
+			$districts = M('Region')->field('region_id,region_name')->where(array('parent_id'=>$result['city']))->select();
+			$new_districts = '';
+			foreach ($districts as $v) {
+				$new_districts .= "<option value=".$v[region_id].($v['region_id']==$result['district']?' selected':'')."> $v[region_name] </option>";
+			}
+			$this->assign('new_districts',$new_districts);
+		}
+		$this->assign('new_provinces',$new_provinces);
 		$this->assign('type', $type);
 		$this->display('Good_index');
 	}

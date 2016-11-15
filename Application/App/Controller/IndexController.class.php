@@ -11,12 +11,50 @@ namespace App\Controller;
 use Api\Controller\WxController;
 use Think\Controller;
 class  IndexController extends Controller {
-
+    protected $where=array();
     /*--------------------------------------- */
     //-- 初始化函数
     /*--------------------------------------- */
     public function _initialize() {
         $this->redirect_uri = C('WX_CONFIG.WX_REDIRECT_URI');
+        //添加地区自动查询
+        if($location=session('location')){
+            $province_id = M('Region')->where(array('region_name'=>substr($location['province'],0,-3)))->getField('region_id');
+            $city_id = M('Region')->where(array('region_name'=>substr($location['city'],0,-3)))->getField('region_id');
+            $district_id = M('Region')->where(array('region_name'=>$location['district']))->getField('region_id');
+        }
+        if(isset($_GET['auto'])&&$_GET['auto']==0){
+            list($province_id,$city_id,$district_id)=explode(',',$_GET['location']);
+            $this->assign('request_str',urlencode('&auto=0&location='.$_GET['location']));
+        }
+        if($province_id) $this->where['province']=$province_id;
+        if($city_id) $this->where['city']=$city_id;
+        if($district_id) $this->where['district']=$district_id;
+        //省列表
+        $provinces = M('Region')->field('region_id,region_name')->where('parent_id=1 ')->select();
+        $new_provinces = '';
+        foreach ($provinces as $v) {
+            $new_provinces .= "<option value=".$v[region_id].($v['region_id']==$province_id?' selected':'')."> $v[region_name] </option>";
+        }
+        $this->assign('new_provinces',$new_provinces);
+        //市列表
+        if($province_id){
+            $citys = M('Region')->field('region_id,region_name')->where(array('parent_id'=>$province_id))->select();
+            $new_citys = '';
+            foreach ($citys as $v) {
+                $new_citys .= "<option value=".$v[region_id].($v['region_id']==$city_id?' selected':'')."> $v[region_name] </option>";
+            }
+            $this->assign('new_citys',$new_citys);
+        }
+        //区列表
+        if($city_id){
+            $districts = M('Region')->field('region_id,region_name')->where(array('parent_id'=>$city_id))->select();
+            $new_districts = '';
+            foreach ($districts as $v) {
+                $new_districts .= "<option value=".$v[region_id].($v['region_id']==$district_id?' selected':'')."> $v[region_name] </option>";
+            }
+            $this->assign('new_districts',$new_districts);
+        }
     }
 
     /*--------------------------------------- */
@@ -52,7 +90,6 @@ class  IndexController extends Controller {
     //-- 回调函数
     /*--------------------------------------- */
     public function wx_return_url(){
-
         $wx = new WxController();
         $_code = session('code');
         if (empty($_code)) {
@@ -86,7 +123,7 @@ class  IndexController extends Controller {
         $uid = M('User') -> where($condition) -> getField('id');
 
         // 获得首页商品列表
-        $goods = R('Api/Good/getGoodList', array($type, $nowpage, $prevpage));
+        $goods = R('Api/Good/getGoodList', array($type, $nowpage, $prevpage,$this->where));
         // 获得商品参与人数
         foreach ($goods as $k=>$v) {
             $goods[$k]['name'] = msubstr($v['name'],0,16);
@@ -94,7 +131,7 @@ class  IndexController extends Controller {
         }
 
         // 获得商品总数
-        $goods_all = ceil(intval(R('Api/Good/getGoodAll', array($type)))/$prevpage);
+        $goods_all = ceil(intval(R('Api/Good/getGoodAll', array($type,$this->where)))/$prevpage);
 
 
         $this->assign('goods_all', $goods_all);
@@ -105,6 +142,13 @@ class  IndexController extends Controller {
         $this->assign('type', $type);
         $this->assign('jssdk', WxController::getSignPackage());
         $this->display('Index_index');
+    }
+    function setCity(){
+        $location = session('location');
+        if(empty($location)){
+            $location = array('province'=>$_POST['province'],'city'=>$_POST['city'],'district'=>$_POST['district']);
+            session('location',$location);
+        }
     }
 
 }

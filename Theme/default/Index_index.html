@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="__CSS__/root.css">
     <!-- Js -->
     <script>
+        var RegionURL = "{:U('Api/Region/getRegion')}";
         var _hmt = _hmt || [];
         (function() {
             var hm = document.createElement("script");
@@ -22,7 +23,10 @@
             var s = document.getElementsByTagName("script")[0];
             s.parentNode.insertBefore(hm, s);
         })();
+        function reload_page(){win}
     </script>
+    <script src="__JS__/jquery.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/Plugin/style/js/regions.js"></script>
     <style>
         .footer ul li:not(:last-child):after {
             display: block;
@@ -60,20 +64,14 @@
         <!-- 地址选择 -->
         <div class="sel-address clearfix">
             <input type="hidden" value="http://public.diandongshenghuo.com/__IMG__/share-img.jpg" id="share-img">
-            <span style="display: inline-block; font-family:'微软雅黑'; font-size: 12px; padding: 4px;font-weight: 600;color: #F00;">开通城市：枣庄市</span>
-            <select name="" disabled>
-                <option value="" selected ></option>
-            </select>
-            <select name="" disabled>
-                <option value="" selected >枣庄</option>
-            </select>
-            <select name="" disabled>
-                <option value="" selected >山东</option>
-            </select>
+            <span id='nowcity' style="display: inline-block; font-family:'微软雅黑'; font-size: 12px; padding: 4px;font-weight: 600;color: #F00;">开通城市：无</span>
+            <select name="district" id="selDistricts" onchange="get_region()"><option value=0>请选择区</option>{$new_districts}</select>
+            <select name="city" id="selCities" onchange="region.changed(this, 3, 'selDistricts')"><option value=0>请选择市</option>{$new_citys}</select>
+            <select name="province" id="selProvinces" onchange="region.changed(this, 2, 'selCities')"><option value=0>请选择省</option>{$new_provinces}</select>
         </div>
         <div class="status">
-            <a href="{:U('App/Index/index', array(type=>'show'))}" class="btn btn-success">进行中</a>
-            <a href="{:U('App/Index/index', array(type=>'hidden'))}" class="btn btn-warning">已结束</a>
+            <a href="{:U('App/Index/index','type=show')}{:urldecode($request_str)}" class="btn btn-success">进行中</a>
+            <a href="{:U('App/Index/index', 'type=hidden')}{:urldecode($request_str)}" class="btn btn-warning">已结束</a>
         </div>
         <!-- 商品列表 -->
         <div class="goods-group">
@@ -101,7 +99,7 @@
 								<else/>
 									<a href="javascript:;" class="buy-btn btn-gray">已结束</a>
 								</if>
-                                
+
                             </div>
                         </div>
                     </li>
@@ -121,7 +119,7 @@
     </div>
     <div class="footer">
         <ul>
-            <li style="width: 35%; position: relative;"><a href="{:U('App/Index/index', array('openid'=>$openid))}">商品列表</a></li>
+            <li style="width: 35%; position: relative;"><a href="{:U('App/Index/index', 'openid='.$openid.'&type=show')}{:urldecode($request_str)}">商品列表</a></li>
             <li style="width: 30%; position: relative;"><a href="{:U('App/Share/index', array('openid'=>$openid))}">兑换照</a></li>
             <li style="width: 35%;"><a href="{:U('App/User/index', array('openid'=>$openid))}">个人中心</a></li>
         </ul>
@@ -129,17 +127,20 @@
 </div>
 
 </body>
-<script src="__JS__/jquery.min.js"></script>
 <script src="__JS__/root.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
 <script>
+    function get_region(){
+        var local = $('#selProvinces').val()+','+$('#selCities').val()+','+$('#selDistricts').val();
+        window.location.href = encodeURI("{:U('App/Index/index',array('openid'=>$openid))}"+'&auto=0&location='+local);
+    }
     wx.config({
         debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
         appId: '{$jssdk.appId}', // 必填，公众号的唯一标识
         timestamp: '{$jssdk.timestamp}', // 必填，生成签名的时间戳
         nonceStr: '{$jssdk.nonceStr}', // 必填，生成签名的随机串
         signature: '{$jssdk.signature}',// 必填，签名，见附录1
-        jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+        jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage','getLocation'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
     });
     wx.ready(function() {
         wx.onMenuShareTimeline({
@@ -166,6 +167,44 @@
             cancel: function () {
                 // 用户取消分享后执行的回调函数
             }
+        });
+        wx.getLocation({
+            success: function (res) {
+                var latitude = res.latitude;
+                var longitude = res.longitude;
+                $.ajax({
+                    url: 'http://api.map.baidu.com/geocoder/v2/?ak=btsVVWf0TM1zUBEbzFz6QqWF&callback=renderReverse&location=' + latitude + ',' + longitude + '&output=json&pois=1',
+                    type: "get",
+                    dataType: "jsonp",
+                    jsonp: "callback",
+                    success: function (data) {
+                        console.log(data);
+                        var province = data.result.addressComponent.province;
+                        var cityname = (data.result.addressComponent.city);
+                        var district = data.result.addressComponent.district;
+                        var street = data.result.addressComponent.street;
+                        var street_number = data.result.addressComponent.street_number;
+                        var formatted_address = data.result.formatted_address;
+                        localStorage.setItem("province", province);
+                        localStorage.setItem("cityname", cityname);
+                        localStorage.setItem("district", district);
+                        localStorage.setItem("street", street);
+                        localStorage.setItem("street_number", street_number);
+                        localStorage.setItem("formatted_address", formatted_address);
+                        $('#nowcity').html('开通城市：'+district);
+                        $.post("{:U('setCity')}",{province:province,city:cityname,district:district},function(){
+                            if(!window.name){
+                                    window.name = 'test';
+                                    window.location.reload();
+                            }
+                        });
+
+                    }
+                });
+          },
+          cancel: function (res) {
+            alert('用户拒绝授权获取地理位置');
+          }
         });
     });
 </script>

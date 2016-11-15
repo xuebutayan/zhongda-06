@@ -32,6 +32,7 @@ class RegionController extends Controller {
 
         $type = I('type');
         $parent_id = I('pid');
+        $target = I('target');
 
         $this->model = M('Region');
         $condition['region_type'] = $type;
@@ -39,7 +40,9 @@ class RegionController extends Controller {
 
         $result = $this->model -> where($condition) -> select();
         if ($result) {
-            $this->ajaxReturn(array('region'=>$result));
+            $this->ajaxReturn(array('regions'=>$result,'type'=>$type,'target'=>$target));
+        }else{
+            $this->ajaxReturn(array('regions'=>array(),'type'=>$type,'target'=>$target));
         }
     }
 
@@ -65,7 +68,7 @@ class RegionController extends Controller {
     /*--------------------------------------- */
     //-- 获得市列表
     /*--------------------------------------- */
-    public function getCity($region_name = '', $parent_id = 0) {
+    public function getCity($parent_id = 0,$region_name = '') {
 
         if ($region_name != '') {
             $condition['region_name'] = $region_name;
@@ -79,12 +82,16 @@ class RegionController extends Controller {
 
         $result = $this->model -> where($condition) -> select();
         if ($result) {
-            return $result;
+            if(IS_AJAX){
+                return $this->ajaxReturn($result);
+            }else{
+                return $result;
+            }
         }
     }
 
     /*--------------------------------------- */
-    //-- 获得省列表
+    //-- 获得区列表
     /*--------------------------------------- */
     public function getDistrict($region_id = '', $parent_id = 0) {
 
@@ -100,7 +107,11 @@ class RegionController extends Controller {
 
         $result = $this->model -> where($condition) -> select();
         if ($result) {
-            return $result;
+            if(IS_AJAX){
+                return $this->ajaxReturn($result);
+            }else{
+                return $result;
+            }
         }
     }
 

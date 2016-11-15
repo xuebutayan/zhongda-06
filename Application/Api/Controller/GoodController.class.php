@@ -34,18 +34,16 @@ class GoodController extends Controller {
     /*--------------------------------------- */
     //-- APP 获得商品列表
     /*--------------------------------------- */
-    public function getGoodList($type, $nowpage, $prevpage) {
-
+    public function getGoodList($type, $nowpage, $prevpage,$location=array()) {
         // 判断商品活动时间是否已经结束
         $update_date['status'] = 0;
         M('Good') -> where('end_date IS NOT NULL AND end_date < "'.date('Y-m-d', time()).'"') -> save($update_date);
-
         if ($type == 'show') {
             $condition['status'] = 1;
         } elseif ($type == 'hidden') {
             $condition['status'] = 0;
         }
-
+        $condition = array_merge($condition,$location);
         $oby = 'sort DESC, id DESC';
         $field = 'id, name, price, old_price, status, savepath, image, status, is_new, price, good_num, IFNULL(begin_date, 0) AS begin_date, IFNULL(end_date, 0) AS end_date';
         $goods = $this->model -> where($condition) -> page($nowpage, $prevpage) -> field($field) -> order($oby) -> select();
@@ -89,12 +87,13 @@ class GoodController extends Controller {
         }
     }
 
-    public function getGoodAll($type) {
+    public function getGoodAll($type,$location=array()) {
         if ($type == 'show') {
             $condition['status'] = 1;
         } elseif ($type == 'hidden') {
             $condition['status'] = 0;
         }
+        $condition = array_merge($condition,$location);
         return M('Good') -> where($condition) -> count();
     }
 

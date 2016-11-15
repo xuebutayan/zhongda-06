@@ -1,14 +1,15 @@
 <include file="Public:header"/>
 <script type="text/javascript">
 var UEURL = '__ROOT__/Public/Plugin/umeditor/';
+var RegionURL = "{:U('Api/Region/getRegion')}";
 </script>
 <link href="__PUBLIC__/Plugin/umeditor/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">
 <script type="text/javascript" src="__PUBLIC__/Plugin/umeditor/third-party/jquery.min.js"></script>
 <script type="text/javascript" charset="utf-8" src="__PUBLIC__/Plugin/umeditor/umeditor.config.js"></script>
 <script type="text/javascript" charset="utf-8" src="__PUBLIC__/Plugin/umeditor/umeditor.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/Plugin/umeditor/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Plugin/style/js/regions.js"></script>
 <link rel="stylesheet" href="__PUBLIC__/Plugin/style/css/bootstrap-datepicker.css">
-
 <div class="col-sm-12 widget-container-span">
 	<div class="widget-box transparent">
 		<div class="widget-header">
@@ -106,6 +107,10 @@ var UEURL = '__ROOT__/Public/Plugin/umeditor/';
 													<td><input type="text" class="input col-sm-2" name="good_num" value="{$result.good_num}"></td>
 												</tr>
 												<tr>
+													<td>商品所在地:</td>
+													<td>省：<select name="province" id="selProvinces" onchange="region.changed(this, 2, 'selCities')"><option value=0>请选择省</option>{$new_provinces}</select>市：<select name="city" id="selCities" onchange="region.changed(this, 3, 'selDistricts')"><option value=0>请选择市</option>{$new_citys}</select>区：<select name="district" id="selDistricts"><option value=0>请选择区</option>{$new_districts}</select></td>
+												</tr>
+												<tr>
 													<td>商品排序：</td>
 													<td><input type="text" class="input col-sm-2" name="addsort" value="{$result.sort}"></td>
 												</tr>
@@ -193,6 +198,16 @@ var UEURL = '__ROOT__/Public/Plugin/umeditor/';
 			um.addListener('focus',function(){
 				$('#focush2').html('')
 			});
+			function select_area1(id){
+				$.post("{:U('Api/Region/getCity')}",{parent_id:id},function(data){
+					var str = '';
+					for(var i=0;i<data.length;i++){
+						str += '<option value='+data[i].region_id+'>'+data[i].region_name+'</option>';
+					}
+					$('select[name=city]').html(str);
+					$('select[name=district]').html('<option value=0>请选择区</option>');
+				})
+			}
 		</script>
 		<script src="__PUBLIC__/Plugin/style/js/bootstrap-datepicker.js"></script>
 		<script src="__PUBLIC__/Plugin/style/js/bootstrap-datepicker.zh-CN.js"></script>
