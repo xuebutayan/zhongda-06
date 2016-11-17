@@ -45,7 +45,23 @@ class AdminController extends PublicController {
             $result = M('Admin') -> where('id='.$id) -> find();
             $this->assign('result', $result);
         }
-
+        list($province_id,$city_id) = explode(',',$result['region_id']);
+        //省列表
+        $provinces = M('Region')->field('region_id,region_name')->where('parent_id=1 ')->select();
+        $new_provinces = '';
+        foreach ($provinces as $v) {
+            $new_provinces .= "<option value=".$v[region_id].($v['region_id']==$province_id?' selected':'')."> $v[region_name] </option>";
+        }
+        $this->assign('new_provinces',$new_provinces);
+        //市列表
+        if($provincde_id){
+            $citys = M('Region')->field('region_id,region_name')->where(array('parent_id'=>$provincde_id))->select();
+            $new_citys = '';
+            foreach ($citys as $v) {
+                $new_citys .= "<option value=".$v[region_id].($v['region_id']==$city_id?' selected':'')."> $v[region_name] </option>";
+            }
+            $this->assign('new_citys',$new_citys);
+        }
         // 获得兑换地点
         $redeem_list = $list = M('Redeem') -> field('id, name') -> where('status=1 AND type=2') -> select();
 
@@ -63,6 +79,7 @@ class AdminController extends PublicController {
             }
             $datas['type'] = $post['type'];
             $datas['redeem'] = $post['redeem'];
+            $datas['region_id'] = $post['province'].','.$post['city'];
             $result = M('Admin') -> where("id=".$post['id']) -> save($datas);
             if ($result) {
                 $this->success('管理员修改成功！', U('Admin/Admin/index'));
@@ -75,6 +92,7 @@ class AdminController extends PublicController {
             $datas['type'] = $post['type'];
             $datas['redeem'] = $post['redeem'];
             $datas['time'] = date('Y-m-d H:i:s', time());
+            $datas['region_id'] = $post['province'].','.$post['city'];
             $result = M('Admin') -> add($datas);
             if ($result) {
                 $this->success('管理员添加成功！', U('Admin/Admin/index'));

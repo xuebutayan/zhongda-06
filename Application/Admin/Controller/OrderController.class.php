@@ -47,8 +47,18 @@ class OrderController extends PublicController {
 			}
 		}
 
-
-		$count = $this->model -> alias('o') -> where($where) ->count (); // 查询满足要求的总记录数
+		if(session('admin_type')==1){
+			$regions = explode(',',session('region_id'));
+			$city_id = $regions[1];
+			if($city_id==0){
+				$where .= ' AND g.city= -1';
+			}else{
+				$where .= ' AND g.city='.$city_id;
+			}
+		}
+		$count = $this->model -> alias('o')
+		-> join(C('DB_PREFIX').'good AS g ON g.id = o.gid', 'LEFT')
+		 -> where($where) ->count (); // 查询满足要求的总记录数
 		$Page = new \Think\Page($count, 10);// 实例化分页类 传入总记录数和每页显示的记录数
 		$Page->setConfig('theme', "<ul class='pagination no-margin pull-right'></li><li>%FIRST%</li><li>%UP_PAGE%</li><li>%LINK_PAGE%</li><li>%DOWN_PAGE%</li><li>%END%</li><li><a> %HEADER%  %NOW_PAGE%/%TOTAL_PAGE% 页</a></ul>");
 		$Page->parameter['redeem'] = $redeem;

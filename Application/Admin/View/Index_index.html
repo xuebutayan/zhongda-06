@@ -3,7 +3,7 @@
 <div class="main-container" id="main-container">
 	<div class="main-container-inner">
 		<include file="Public:left" />
-        <script type="text/javascript" language="javascript"> 
+        <script type="text/javascript" language="javascript">
    		function iframeResize(iframe) {
 	        iframe.height = $(window).height()-90;
 	    }
@@ -16,7 +16,7 @@
 				</ul>
 			</div>
 			<div id="content_main">
-				<iframe src="{:U('Admin/Index/set')}" id="main_iframe" name="main_iframe"
+				<iframe src="<if condition="$_SESSION['admin_type']==1">{:U('Admin/Good/index')}<else />{:U('Admin/Index/set')}</if>" id="main_iframe" name="main_iframe"
 					style="width: 100%;" frameborder="0" onload="iframeResize(this);"  scrolling="yes"></iframe>
 
 			</div>

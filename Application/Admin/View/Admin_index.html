@@ -1,4 +1,8 @@
 <include file="Public:header"/>
+<script type="text/javascript">
+var RegionURL = "{:U('Api/Region/getRegion')}";
+</script>
+<script type="text/javascript" src="__PUBLIC__/Plugin/style/js/regions.js"></script>
 <div class="col-sm-12 widget-container-span">
     <div class="widget-box transparent">
         <div class="widget-header">
@@ -98,6 +102,11 @@
                                                             </volist>
                                                         </select>
                                                     </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>管理员所属地区:</td>
+                                                    <td>
+                                                    省：<select name="province" id="selProvinces" onchange="region.changed(this, 2, 'selCities')"><option value=0>请选择省</option>{$new_provinces}</select>市：<select name="city" id="selCities"><option value=0>请选择市</option>{$new_citys}</select>
                                                 </tr>
                                                 </tbody>
                                             </table>

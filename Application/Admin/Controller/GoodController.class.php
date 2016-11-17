@@ -14,8 +14,17 @@ class GoodController extends PublicController {
 	public function index() {
 		$type = I('type', 'list');
 		$m = M ( "Good" );
-
-		$count = $m->count (); // 查询满足要求的总记录数
+		$where = array();
+		if(session('admin_type')==1){
+			$regions = explode(',',session('region_id'));
+			$city_id = $regions[1];
+			if($city_id==0){
+				$where['city'] = -1;
+			}else{
+				$where['city'] = $city_id;
+			}
+		}
+		$count = $m->where($where)->count (); // 查询满足要求的总记录数
 
 		$Page = new \Think\Page($count,12);// 实例化分页类 传入总记录数和每页显示的记录数(25)
 		$Page->setConfig('theme', "<ul class='pagination no-margin pull-right'></li><li>%FIRST%</li><li>%UP_PAGE%</li><li>%LINK_PAGE%</li><li>%DOWN_PAGE%</li><li>%END%</li><li><a> %HEADER%  %NOW_PAGE%/%TOTAL_PAGE% 页</a></ul>");
@@ -23,7 +32,7 @@ class GoodController extends PublicController {
 		$show = $Page->show (); // 分页显示输出
 		$field = " *, old_price  as shopping_price";
 		$oby = " sort DESC, id DESC ";
-		$result = $m-> field($field) -> order($oby) -> limit ( $Page->firstRow . ',' . $Page->listRows )->select ();
+		$result = $m->where($where)-> field($field) -> order($oby) -> limit ( $Page->firstRow . ',' . $Page->listRows )->select ();
 
 		$this->assign ( "page", $show ); // 赋值分页输出
 		$this->assign ( "result", $result );

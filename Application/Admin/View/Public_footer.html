@@ -1,64 +1,76 @@
 		<script type="text/javascript">
 		/* 菜单管理 */
-		$('.nav.nav-list li').eq(1).click(function() {
+		$('.nav.nav-list li#menu_01').click(function() {
 			$('.nav.nav-list li').removeClass('active');
 			$(this).addClass('active');
 			$('#breadcrumbs ul li').eq(1).html('菜单管理');
 			$('#main_iframe').attr("src","{:U('Admin/Menu/index')}");
 		});
 		/* 商品管理 */
-		$('.nav.nav-list li').eq(2).click(function() {
+		$('.nav.nav-list li#menu_02').click(function() {
 			$('.nav.nav-list li').removeClass('active');
 			$(this).addClass('active');
 			$('#breadcrumbs ul li').eq(1).html('商品管理');
 			$('#main_iframe').attr("src","{:U('Admin/Good/index')}");
 		});
 		/* 订单管理 */
-		$('.nav.nav-list li').eq(3).click(function() {
+		$('.nav.nav-list li#menu_03').click(function() {
 			$('.nav.nav-list li').removeClass('active');
 			$(this).addClass('active');
 			$('#breadcrumbs ul li').eq(1).html('订单管理');
 			$('#main_iframe').attr("src","{:U('Admin/Order/index')}");
 		});
 		/* 用户管理 */
-		$('.nav.nav-list li').eq(4).click(function() {
+		$('.nav.nav-list li#menu_04').click(function() {
 			$('.nav.nav-list li').removeClass('active');
 			$(this).addClass('active');
 			$('#breadcrumbs ul li').eq(1).html('用户管理');
 			$('#main_iframe').attr("src","{:U('Admin/User/index')}");
 		});
 		/* 晒照管理 */
-		$('.nav.nav-list li').eq(5).click(function() {
+		$('.nav.nav-list li#menu_05').click(function() {
 			$('.nav.nav-list li').removeClass('active');
 			$(this).addClass('active');
 			$('#breadcrumbs ul li').eq(1).html('晒照管理');
 			$('#main_iframe').attr("src","{:U('Admin/Share/index')}");
 		});
 		/* 兑换地点管理 */
-		$('.nav.nav-list li').eq(6).click(function() {
+		$('.nav.nav-list li#menu_06').click(function() {
 			$('.nav.nav-list li').removeClass('active');
 			$(this).addClass('active');
 			$('#breadcrumbs ul li').eq(1).html('兑换管理');
 			$('#main_iframe').attr("src","{:U('Admin/Redeem/index')}");
 		});
 		/* 兑换记录 */
-		$('.nav.nav-list li').eq(7).click(function() {
+		$('.nav.nav-list li#menu_07').click(function() {
 			$('.nav.nav-list li').removeClass('active');
 			$(this).addClass('active');
 			$('#breadcrumbs ul li').eq(1).html('兑换管理');
 			$('#main_iframe').attr("src","{:U('Admin/Redeem/getLogs')}");
 		});
-		$('.nav.nav-list li').eq(8).click(function() {
+		$('.nav.nav-list li#menu_08').click(function() {
 			$('.nav.nav-list li').removeClass('active');
 			$(this).addClass('active');
 			$('#breadcrumbs ul li').eq(1).html('我要报表');
 			$('#main_iframe').attr("src","{:U('Admin/Redeem/collect')}");
 		});
-		$('.nav.nav-list li').eq(9).click(function() {
+		$('.nav.nav-list li#menu_09').click(function() {
 			$('.nav.nav-list li').removeClass('active');
 			$(this).addClass('active');
 			$('#breadcrumbs ul li').eq(1).html('管理员列表');
 			$('#main_iframe').attr("src","{:U('Admin/Admin/index')}");
+		});
+		$('.nav.nav-list li#menu_10').click(function() {
+			$('.nav.nav-list li').removeClass('active');
+			$(this).addClass('active');
+			$('#breadcrumbs ul li').eq(1).html('兑换验证');
+			$('#main_iframe').attr("src","{:U('Admin/Order/Order_check')}");
+		});
+		$('.nav.nav-list li#menu_11').click(function() {
+			$('.nav.nav-list li').removeClass('active');
+			$(this).addClass('active');
+			$('#breadcrumbs ul li').eq(1).html('已兑换列表');
+			$('#main_iframe').attr("src","{:U('Admin/Order/getRewardLog','rid='.$_SESSION['redeem'])}");
 		});
 		/* 微信管理 */
 		/*$('.nav.nav-list li').eq(6).click(function() {
